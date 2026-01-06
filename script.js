@@ -10,34 +10,29 @@ async function loadPDFs() {
         answerDoc = await pdfjsLib.getDocument(pdfFiles.answers).promise;
         totalQuizzes = Math.min(questionDoc.numPages, answerDoc.numPages);
         displayOrder = [...Array(totalQuizzes).keys()];
-        renderQuiz();
+        renderQuiz(); 
         buildGrid();
-    } catch (err) {
-        document.getElementById('progress').innerText = "File Load Error";
-        console.error(err);
-    }
+    } catch (err) { console.error("PDF Load Error:", err); }
 }
 
 async function renderQuiz() {
     if (!questionDoc || !answerDoc) return;
     const actualIdx = displayOrder[currentIndex];
-    const pageNum = actualIdx + 1;
-
-    // Reset Answer UI State (Anti-Spoiler)
+    const scrollArea = document.getElementById('mainScroll');
     const ansSec = document.getElementById('answerSection');
     const leakBtn = document.getElementById('leakBtn');
+    
+    scrollArea.scrollTop = 0;
     ansSec.classList.add('hidden-viewport');
     leakBtn.innerText = "Leak Answer";
 
-    // Draw Question
-    const qPage = await questionDoc.getPage(pageNum);
+    // Re-draw both to ensure original proportions are captured
+    const qPage = await questionDoc.getPage(actualIdx + 1);
     await drawPage(qPage, 'questionCanvas');
     
-    // Draw Answer (Renders in background while hidden)
-    const aPage = await answerDoc.getPage(pageNum);
+    const aPage = await answerDoc.getPage(actualIdx + 1);
     await drawPage(aPage, 'answerCanvas');
 
-    // Update UI
     document.getElementById('progress').innerText = `${currentIndex + 1} / ${totalQuizzes}`;
     document.getElementById('starBtn').classList.toggle('active', starredItems.has(actualIdx));
 }
@@ -45,28 +40,47 @@ async function renderQuiz() {
 async function drawPage(page, canvasId) {
     const canvas = document.getElementById(canvasId);
     const context = canvas.getContext('2d');
-    const containerWidth = canvas.parentElement.clientWidth || 600;
+    const wrapper = canvas.parentElement;
+    
+    wrapper.style.height = "auto";
+    const containerWidth = wrapper.clientWidth || 600;
 
-    const unscaledViewport = page.getViewport({ scale: 1 });
-    const scale = containerWidth / unscaledViewport.width;
-    const viewport = page.getViewport({ scale: scale * 2 }); // High res
+    // We use viewBox here to ensure we capture the FULL original page area
+    const viewport = page.getViewport({ scale: 1, rotation: page.rotate });
+    
+    const scale = containerWidth / viewport.width;
+    const scaledViewport = page.getViewport({ scale: scale * 2, rotation: page.rotate });
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    canvas.parentElement.style.height = (viewport.height / 2) + "px";
+    canvas.width = scaledViewport.width;
+    canvas.height = scaledViewport.height;
 
-    await page.render({ canvasContext: context, viewport: viewport }).promise;
+    // This line forces the wrapper to exactly match the PDF page's height-to-width ratio
+    wrapper.style.height = (scaledViewport.height / 2) + "px";
+
+    await page.render({ 
+        canvasContext: context, 
+        viewport: scaledViewport 
+    }).promise;
 }
-
-function nextQuiz() { if (currentIndex < totalQuizzes - 1) { currentIndex++; renderQuiz(); } }
-function prevQuiz() { if (currentIndex > 0) { currentIndex--; renderQuiz(); } }
 
 function toggleAnswer() {
     const sec = document.getElementById('answerSection');
     const btn = document.getElementById('leakBtn');
+    const scrollArea = document.getElementById('mainScroll');
     const isHidden = sec.classList.toggle('hidden-viewport');
-    btn.innerText = isHidden ? "Leak Answer" : "Hide";
+    
+    if (!isHidden) {
+        btn.innerText = "Hide Answer";
+        setTimeout(() => {
+            scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+        }, 100);
+    } else {
+        btn.innerText = "Leak Answer";
+    }
 }
+
+function nextQuiz() { if (currentIndex < totalQuizzes - 1) { currentIndex++; renderQuiz(); } }
+function prevQuiz() { if (currentIndex > 0) { currentIndex--; renderQuiz(); } }
 
 function toggleStar() {
     const idx = displayOrder[currentIndex];
@@ -76,20 +90,16 @@ function toggleStar() {
 }
 
 function setMode(mode) {
-    if (mode === 'random') displayOrder.sort(() => Math.random() - 0.5);
-    else displayOrder = [...Array(totalQuizzes).keys()];
-    currentIndex = 0;
-    renderQuiz();
+    displayOrder = (mode === 'random') ? displayOrder.sort(() => Math.random() - 0.5) : [...Array(totalQuizzes).keys()];
+    currentIndex = 0; renderQuiz();
 }
 
 function buildGrid() {
     const table = document.getElementById('gridTable');
-    table.innerHTML = "";
-    let row;
+    table.innerHTML = ""; let row;
     for (let i = 0; i < totalQuizzes; i++) {
         if (i % 10 === 0) row = table.insertRow();
-        const cell = row.insertCell();
-        cell.innerText = i + 1;
+        const cell = row.insertCell(); cell.innerText = i + 1;
         if (starredItems.has(i)) cell.classList.add('starred');
         cell.onclick = () => { currentIndex = displayOrder.indexOf(i); renderQuiz(); toggleGrid(); };
     }
