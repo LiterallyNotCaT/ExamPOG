@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Quiz Master</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <header class="nav-bar">
+            <button class="btn-star" id="starBtn" onclick="toggleStar()">★</button>
+            <div id="progress" class="progress-info" onclick="toggleGrid()">Loading...</div>
+            <div class="nav-arrows">
+                <button class="btn-nav" onclick="prevQuiz()">❮ Prev</button>
+                <button class="btn-nav" onclick="nextQuiz()">Next ❯</button>
+            </div>
+        </header>
+
+        <div class="viewport">
+            <div class="canvas-wrapper">
+                <canvas id="questionCanvas"></canvas>
+            </div>
+        </div>
+
+        <div id="answerSection" class="viewport hidden-viewport">
+            <span class="label" style="font-weight:bold; color:#e67e22;">Solution:</span>
+            <div class="canvas-wrapper">
+                <canvas id="answerCanvas"></canvas>
+            </div>
+        </div>
+
+        <footer class="controls">
+            <button class="btn-leak" id="leakBtn" onclick="toggleAnswer()">Leak Answer</button>
+            <div class="mode-buttons">
+                <button class="btn-mode" onclick="setMode('sequence')">Sequence</button>
+                <button class="btn-mode" onclick="setMode('random')">Shuffle</button>
+            </div>
+        </footer>
+
+        <div id="gridOverlay" class="overlay hidden">
+            <div class="overlay-content">
+                <h3>Select Question</h3>
+                <table class="grid-table" id="gridTable"></table>
+                <button class="btn-close" onclick="toggleGrid()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
