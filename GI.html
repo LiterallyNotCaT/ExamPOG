@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamPOG GI1</title>
+    <link rel="stylesheet" href="GI.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="mesh-bg"></div>
+    
+    <header class="main-header">
+        <h1>ExamPOG GI I</h1>
+        <p>AC Problems from Academic MDCU</p>
+    </header>
+
+    <main class="portal-container">
+        <div class="main-grid">
+            <section class="glass-card spot-card">
+                <div class="card-header">
+                    <i class="fas fa-eye"></i>
+                    <h2>SPOT</h2>
+                </div>
+                <div class="dynamic-button-grid">
+                    <button onclick="openExam('GI_SPOT80Q.pdf', 'GI_SPOT80A.pdf')">80</button>
+                    <button onclick="openExam('s2.pdf', 'sa2.pdf')">79</button>
+                    <button onclick="openExam('s3.pdf', 'sa3.pdf')">78</button>
+                    <button onclick="openExam('s4.pdf', 'sa4.pdf')">77</button>
+                    <button onclick="openExam('s4.pdf', 'sa4.pdf')">76</button>
+                </div>
+            </section>
+
+            <section class="glass-card mcq-card">
+                <div class="card-header">
+                    <i class="fas fa-tasks"></i>
+                    <h2>MCQ</h2>
+                </div>
+                <div class="dynamic-button-grid">
+                    <button onclick="openExam('GI_SPOT80Q.pdf', 'GI_SPOT80A.pdf')">80</button>
+                    <button onclick="openExam('m2.pdf', 'ma2.pdf')">79</button>
+                    <button onclick="openExam('m3.pdf', 'ma3.pdf')">78</button>
+                    <button onclick="openExam('m4.pdf', 'ma4.pdf')">77</button>
+                    <button onclick="openExam('s4.pdf', 'sa4.pdf')">76</button>
+                </div>
+            </section>
+        </div>
+
+        <div class="bottom-row">
+            <section class="glass-card mock-card">
+                <div class="card-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>MOCK EXAM</h2>
+                </div>
+                <div class="dynamic-button-grid">
+                    <button onclick="openExam('mock1.pdf', 'ans1.pdf')">Mock A</button>
+                    <button onclick="openExam('mock2.pdf', 'ans2.pdf')">Mock B</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="GI.js"></script>
+</body>
+</html>

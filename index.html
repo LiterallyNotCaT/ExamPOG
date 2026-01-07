@@ -73,11 +73,17 @@
         </div>
 
         <footer class="controls">
-            <button class="btn-leak" id="leakBtn" onclick="toggleAnswer()">Show Solution</button>
+            <button class="btn-leak" id="leakBtn" onclick="toggleAnswer()">Leak Answer</button>
             
             <div class="mode-buttons">
                 <button class="btn-mode" onclick="setMode('sequence')"><i class="fas fa-list-ol"></i> Sequence</button>
                 <button class="btn-mode" onclick="setMode('random')"><i class="fas fa-shuffle"></i> Shuffle</button>
+            </div>
+            <!-- back btn -->
+            <div>
+              <button class="btn-back" onclick="window.location.href='GI.html'">
+              <i class="fas fa-chevron-left"></i> Back
+              </button>
             </div>
         </footer>
 
@@ -91,6 +97,7 @@
             </div>
         </div>
     </div>
+    
     <script src="script.js"></script>
 </body>
 

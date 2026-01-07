@@ -1,0 +1,120 @@
+/* Gorgeous Mesh Background */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #0f172a;
+    background-image: 
+        radial-gradient(at 0% 0%, rgb(13, 55, 27) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, rgb(215, 218, 14) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, rgb(200, 35, 93) 0, transparent 50%),
+        radial-gradient(at 0% 100%, rgb(21, 49, 43) 0, transparent 50%),
+        radial-gradient(at 20% 50%, rgb(28, 131, 108) 0, transparent 50%),
+        radial-gradient(at 60% 55%, rgb(9, 225, 207) 0, transparent 50%),
+        radial-gradient(at 50% 100%, rgb(50, 8, 112) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgb(106, 3, 3) 0, transparent 50%);
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-header {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.main-header h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    margin: 0;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -2px;
+}
+
+/* Layout Structure */
+.portal-container {
+    width: 95%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding-bottom: 50px;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card-header i { font-size: 2rem; }
+.card-header h2 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+
+/* Colors for specific categories */
+.spot-card i { color: #38bdf8; }
+.mcq-card i { color: #fbbf24; }
+.mock-card i { color: #4ade80; }
+
+/* Dynamic Button Grid (At least 2 buttons per line) */
+.dynamic-button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+/* Stylish Buttons */
+.dynamic-button-grid button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 18px 10px;
+    border-radius: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.dynamic-button-grid button:hover {
+    background: white;
+    color: #0f172a;
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Smaller Mock Block */
+.mock-card {
+    padding: 20px 30px;
+}
+
+/* Responsive adjustment for Mobile */
+@media (max-width: 600px) {
+    .main-header h1 { font-size: 2.5rem; }
+    .main-grid { grid-template-columns: 1fr; }
+}

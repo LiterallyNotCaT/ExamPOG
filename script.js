@@ -1,6 +1,12 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const pdfFiles = { questions: 'quiz.pdf', answers: 'answer.pdf' };
+// const pdfFiles = { questions: 'quiz.pdf', answers: 'answer.pdf' };
+// GET PARAMETERS FROM URL
+const urlParams = new URLSearchParams(window.location.search);
+const qFile = urlParams.get('q') || 'default_quiz.pdf'; // Fallback if no file clicked
+const aFile = urlParams.get('a') || 'default_ans.pdf';
+
+const pdfFiles = { questions: "AC_GI/"+qFile, answers: "AC_GI/"+aFile };
 let questionDoc = null, answerDoc = null, currentIndex = 0, totalQuizzes = 0;
 let displayOrder = [], starredItems = new Set();
 
@@ -35,7 +41,7 @@ async function renderQuiz() {
     // UI Reset
     document.getElementById('mainScroll').scrollTop = 0;
     document.getElementById('answerSection').classList.add('hidden-viewport');
-    document.getElementById('leakBtn').innerText = "Show Solution";
+    document.getElementById('leakBtn').innerText = "Leak Answer";
 
     // Draw Content
     const qPage = await questionDoc.getPage(actualIdx + 1);
@@ -232,7 +238,7 @@ setupCanvasListeners('aDraw', 'a');
 function toggleAnswer() {
     const sec = document.getElementById('answerSection');
     const isHidden = sec.classList.toggle('hidden-viewport');
-    document.getElementById('leakBtn').innerText = isHidden ? "Show Solution" : "Hide Solution";
+    document.getElementById('leakBtn').innerText = isHidden ? "Leak Answer" : "Hide Solution";
     if (!isHidden) setTimeout(() => document.getElementById('mainScroll').scrollTo({ top: document.getElementById('mainScroll').scrollHeight, behavior: 'smooth' }), 100);
 }
 function nextQuiz() { if (currentIndex < totalQuizzes - 1) { currentIndex++; renderQuiz(); } }
@@ -253,7 +259,7 @@ function setMode(mode) {
 function buildGrid() {
     const table = document.getElementById('gridTable'); table.innerHTML = ""; let row;
     for (let i = 0; i < totalQuizzes; i++) {
-        if (i % 5 === 0) row = table.insertRow(); // 5 items per row looks better
+        if (i % 10 === 0) row = table.insertRow(); // 10 items per row looks better
         const cell = row.insertCell(); cell.innerText = i + 1;
         if (starredItems.has(i)) cell.classList.add('starred');
         cell.onclick = () => { currentIndex = displayOrder.indexOf(i); renderQuiz(); toggleGrid(); };

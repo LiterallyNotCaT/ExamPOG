@@ -118,7 +118,7 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
 .btn-leak:active { transform: scale(0.98); }
 
 /* 2. Lower Buttons (Large & Prettier) */
-.mode-buttons { display: flex; gap: 15px; }
+.mode-buttons { display: flex; gap: 15px; margin-bottom: 15px; }
 .btn-mode { 
     flex: 1; padding: 16px; font-size: 16px; font-weight: 600;
     background: #f2f2f7; color: #333; border: none; border-radius: 12px;
@@ -149,3 +149,21 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
     border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
 }
 .hidden { display: none; }
+
+.btn-back {
+    background: #f2f2f7;
+    border: none;
+    padding: 8px 15px;
+    
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-back:hover {
+    background: #e5e5ea;
+}
