@@ -7,7 +7,7 @@ const qFile = urlParams.get('q') || 'default_quiz.pdf'; // Fallback if no file c
 const aFile = urlParams.get('a') || 'default_ans.pdf';
 const Subject = urlParams.get('s') ;
 
-const pdfFiles = { questions: `AC_${Subject}/${Subject}_${qFile}.pdf`, answers: `AC_${Subject}/${Subject}_${qFile}.pdf` };
+const pdfFiles = { questions: `AC_${Subject}/${Subject}_${qFile}.pdf`, answers: `AC_${Subject}/${Subject}_${aFile}.pdf` };
 let questionDoc = null, answerDoc = null, currentIndex = 0, totalQuizzes = 0;
 let displayOrder = [], starredItems = new Set();
 
