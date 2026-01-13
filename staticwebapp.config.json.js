@@ -2,7 +2,7 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": ["members"]
+      "allowedRoles": ["authenticated"]
     }
   ],
   "responseOverrides": {
@@ -11,4 +11,5 @@
       "redirect": "/.auth/login/aad"
     }
   }
+
 }
