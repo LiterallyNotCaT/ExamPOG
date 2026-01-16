@@ -12,7 +12,8 @@ body {
 /* --- HEADER --- */
 .nav-bar { 
     display: flex; justify-content: space-between; align-items: center; 
-    padding: 15px 20px; background: white; border-bottom: 1px solid #eee; z-index: 20;
+    
+    padding: 5px 10px; background: white; border-bottom: 1px solid #eee; z-index: 20;
 }
 .progress-info { 
     font-size: 16px; font-weight: 700; color: #007AFF; 
@@ -22,17 +23,17 @@ body {
 .btn-star.active { color: #FFD60A; transform: scale(1.1); }
 
 /* --- BIG NAV BUTTONS --- */
-.nav-arrows { display: flex; gap: 15px; }
-.btn-nav { 
-    width: 45px; height: 45px; border-radius: 50%; border: none; 
+.nav-arrows { display: flex; gap: 8px; }
+.btn-nav {
+    width: 45px; height: 45px; border-radius: 30%; border: none; 
     background: #f0f0f0; font-size: 20px; color: #333; cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s;
 }
 .btn-nav:active { transform: scale(0.95); background: #e0e0e0; }
 
 /* --- CONTENT --- */
-.scroll-area { flex: 1; overflow-y: auto; padding: 20px; background: #f9f9f9; -webkit-overflow-scrolling: touch; }
-.viewport { margin-bottom: 30px; }
+.scroll-area { flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9; -webkit-overflow-scrolling: touch; }
+.viewport { margin-bottom: 15px;width: 100%; }
 .canvas-wrapper { 
     position: relative; width: 100%; height: auto !important; 
     border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
@@ -49,15 +50,29 @@ canvas { display: block; width: 100% !important; height: auto !important; }
 }
 .hidden-viewport { display: none !important; }
 
-/* --- SIDEBAR TOOLBAR (Pretty & Modern) --- */
+.main-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden; 
+    position: relative;
+}
+.sidebar-zone {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0px 0px;
+    z-index: 100; 
+}
+/* --- SIDEBAR TOOLBAR --- */
 .drawing-sidebar {
-    position: fixed; left: 15px; top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 12px; 
-    background: white; padding: 12px; border-radius: 16px; 
+    position: relative;
+    display: flex; flex-direction: row; gap: 12px; 
+    background: white; padding: 8px; border-radius: 16px; 
     box-shadow: 0 5px 25px rgba(0,0,0,0.15); z-index: 1000;
 }
 .drawing-sidebar button {
-    width: 48px; height: 48px; border-radius: 12px; border: 1px solid #f0f0f0;
+    width: 35px; height: 35px; border-radius: 12px; border: 1px solid #f0f0f0;
     background: #fff; color: #555; font-size: 18px; cursor: pointer; transition: 0.2s;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -103,24 +118,31 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
 
 /* --- FOOTER (Big Buttons) --- */
 .controls { 
-    padding: 20px; background: white; border-top: 1px solid #eee; z-index: 20; 
+    padding: clamp(10px, 2vh, 20px); background: white; border-top: 1px solid #eee; z-index: 20; 
     box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    flex-shrink: 0; /* Prevents it from being crushed */
 }
 
 /* 1. Leak Answer Button (Full Width, Bold) */
 .btn-leak { 
-    width: 100%; padding: 18px; font-size: 18px; font-weight: 700; 
+    width: 100%; padding: 6px; 
+       height: clamp(20px, 8vh, 80px);
+    font-size: clamp(12px, 2.0vh, 24px);   
+    font-weight: 700; 
     background: linear-gradient(135deg, #FF9500, #FF3B30); 
     color: white; border: none; border-radius: 12px; 
-    margin-bottom: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+    /* Spacing between this button and the smaller ones below */
+    margin-bottom: clamp(10px, 1.5vh, 15px);
+    cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
     transition: transform 0.1s;
 }
 .btn-leak:active { transform: scale(0.98); }
 
 /* 2. Lower Buttons (Large & Prettier) */
-.mode-buttons { display: flex; gap: 15px; margin-bottom: 15px; }
+.mode-buttons { display: flex; gap: 15px; margin-bottom: 2px; }
 .btn-mode { 
-    flex: 1; padding: 16px; font-size: 16px; font-weight: 600;
+    flex: 1; padding: 12px;height: clamp(20px, 8vh, 80px);
+    font-size: clamp(12px, 1.5vh, 20px);   font-weight: 600;
     background: #f2f2f7; color: #333; border: none; border-radius: 12px;
     cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: 0.2s;
@@ -154,7 +176,8 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
     background: #f2f2f7;
     border: none;
     padding: 8px 15px;
-    
+    height: clamp(12px, 8vh, 80px);
+    font-size: clamp(12px, 1.5vh, 20px); 
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
@@ -167,3 +190,4 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
 .btn-back:hover {
     background: #e5e5ea;
 }
+
