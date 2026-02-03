@@ -7,17 +7,53 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
-<div>
+<body>
     <div class="quiz-container">
-        
         
         <header class="nav-bar">
             <button class="btn-star" id="starBtn" onclick="toggleStar()">★</button>
             <div id="progress" class="progress-info" onclick="toggleGrid()">Loading...</div>
+            <div class="nav-arrows">
+                <button class="btn-nav" onclick="prevQuiz()">❮</button>
+                <button class="btn-nav" onclick="nextQuiz()">❯</button>
+                <button class="btn-nav btn-menu" onclick="toggleExportMenu()">⋮</button>
+            </div>
+        </header>
 
-<aside class="drawing-sidebar">
+        <div id="exportMenu" class="dropdown-menu hidden">
+            <button onclick="saveCurrentPage('png')">Save this page as PNG</button>
+            <button onclick="saveCurrentPage('pdf')">Save this page as PDF</button>
+            
+            <div class="menu-divider"></div>
+            
+            <div class="export-settings">
+                <div class="setting-label">Settings for "Save All":</div>
+                
+                <div class="setting-row">
+                    <span>Format:</span>
+                    <select id="exportFormat">
+                        <option value="1">1 in 1</option>
+                        <option value="4">4 in 1</option>
+                    </select>
+                </div>
+
+                <div class="setting-row">
+                    <span>Filter:</span>
+                    <select id="exportFilter">
+                        <option value="all">All Pages</option>
+                        <option value="starred">Only Starred & Annotated</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="saveAllPages()" id="btnSaveAll" class="btn-save-all">Save All as PDF</button>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar-zone">
+                <aside class="drawing-sidebar">
                     <div class="tool-group">
                         <button onclick="setTool('pen')" id="penBtn" title="Pen"><i class="fas fa-pen"></i></button>
                         <div class="tool-settings-trigger" onclick="toggleSettings('penSettings')">⋮</div>
@@ -51,64 +87,63 @@
 
                  <button onclick="clearAllStrokes()" class="btn-clear" title="Clear Page"><i class="fas fa-trash-can"></i></button>
                 </aside>
-
-            <div class="nav-arrows">
-                <button class="btn-nav" onclick="prevQuiz()">❮</button>
-                <button class="btn-nav" onclick="nextQuiz()">❯</button>
-            </div>
-        </header>
-
-        <div class="main-layout">
-            <div class="sidebar-zone">
-                
             </div>
 
-                    <div class="scroll-area" id="mainScroll">
-                        <div class="viewport">
-                            <div class="canvas-wrapper">
-                             <canvas id="questionCanvas"></canvas>
-                             <canvas id="qDraw" class="draw-layer"></canvas>
-                            </div>
-                        </div>
-
-                        <div id="answerSection" class="viewport hidden-viewport">
-                            <div class="answer-header">Solution</div>
-                            <div class="canvas-wrapper">
-                               <canvas id="answerCanvas"></canvas>
-                                <canvas id="aDraw" class="draw-layer"></canvas>
-                            </div>
-                        </div>
+            <div class="scroll-area" id="mainScroll">
+                <div class="viewport">
+                    <div class="canvas-wrapper">
+                        <canvas id="questionCanvas"></canvas>
+                        <canvas id="qDraw" class="draw-layer"></canvas>
                     </div>
+                </div>
+
+                <div id="answerSection" class="viewport hidden-viewport">
+                    <div class="answer-header">Solution</div>
+                    <div class="canvas-wrapper">
+                        <canvas id="answerCanvas"></canvas>
+                        <canvas id="aDraw" class="draw-layer"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-    
+
         <footer class="controls">
             <button class="btn-leak" id="leakBtn" onclick="toggleAnswer()">Leak Answer</button>
-            
-            
-            <div class="mode-buttons">
-                <!-- back btn -->
-            <div>
-              <button class="btn-back" onclick="history.back()">
-              <i class="fas fa-chevron-left"></i> Back
-              </button>
-            </div>
-                <button class="btn-mode" onclick="setMode('sequence')"><i class="fas fa-list-ol"></i> Sequence</button>
-                <button class="btn-mode" onclick="setMode('random')"><i class="fas fa-shuffle"></i> Shuffle</button>
+            <div class="footer-row">
+                <button class="btn-back" onclick="window.location.href='Nav.html'">
+                    <i class="fas fa-chevron-left"></i> Back
+                </button>
+                <div class="mode-group">
+                    <button class="btn-mode-sm" onclick="setMode('sequence')"><i class="fas fa-list-ol"></i> Seq</button>
+                    <button class="btn-mode-sm" onclick="setMode('random')"><i class="fas fa-shuffle"></i> Shuf</button>
+                </div>
             </div>
         </footer>
 
         <div id="gridOverlay" class="overlay hidden">
             <div class="overlay-content">
-                <h2 style="text-align:center; margin-bottom:20px;">Question Navigator</h2>
+                <h2 style="text-align:center; margin-bottom:5px;">Question Navigator</h2>
+                <div id="starCountDisplay" style="text-align:center; margin-bottom:20px; color:#b45309; font-weight:bold; font-size:14px;">
+                    There are 0 starred questions.
+                </div>
                 <div class="grid-wrapper">
                     <table class="grid-table" id="gridTable"></table>
                 </div>
                 <button class="btn-close-overlay" onclick="toggleGrid()">Close Menu</button>
             </div>
         </div>
-    
+
+        <div id="progressOverlay" class="overlay hidden" style="z-index: 3000;">
+            <div class="progress-box">
+                <h3 style="margin-top:0;">Processing...</h3>
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-fill"></div>
+                </div>
+                <div id="progressText" style="color: #666; font-weight: bold;">0%</div>
+            </div>
+        </div>
+    </div>
     
     <script src="script.js"></script>
 </body>
-
 </html>

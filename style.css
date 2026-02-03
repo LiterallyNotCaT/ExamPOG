@@ -12,8 +12,7 @@ body {
 /* --- HEADER --- */
 .nav-bar { 
     display: flex; justify-content: space-between; align-items: center; 
-    
-    padding: 5px 10px; background: white; border-bottom: 1px solid #eee; z-index: 20;
+    padding: 15px 20px; background: white; border-bottom: 1px solid #eee; z-index: 20;
 }
 .progress-info { 
     font-size: 16px; font-weight: 700; color: #007AFF; 
@@ -22,26 +21,29 @@ body {
 .btn-star { font-size: 32px; background: none; border: none; color: #ddd; cursor: pointer; transition: 0.2s; }
 .btn-star.active { color: #FFD60A; transform: scale(1.1); }
 
-/* --- BIG NAV BUTTONS --- */
-.nav-arrows { display: flex; gap: 8px; }
-.btn-nav {
-    width: 45px; height: 45px; border-radius: 30%; border: none; 
+/* --- NAV BUTTONS --- */
+.nav-arrows { display: flex; gap: 15px; }
+.btn-nav { 
+    width: 45px; height: 45px; border-radius: 50%; border: none; 
     background: #f0f0f0; font-size: 20px; color: #333; cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s;
 }
 .btn-nav:active { transform: scale(0.95); background: #e0e0e0; }
+.btn-menu { font-weight: 900; }
 
 /* --- CONTENT --- */
-.scroll-area { flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9; -webkit-overflow-scrolling: touch; }
-.viewport { margin-bottom: 15px;width: 100%; }
+.scroll-area { 
+    flex: 1; overflow-y: auto; padding: 5px; 
+    background: #f9f9f9; -webkit-overflow-scrolling: touch; 
+}
+.viewport { margin-bottom: 15px; width: 100%; }
 .canvas-wrapper { 
-    position: relative; width: 100%; height: auto !important; 
+    position: relative; width: 100%; margin: 0 auto;
     border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
     background: white; border: 1px solid #eee;
 }
 canvas { display: block; width: 100% !important; height: auto !important; }
 .draw-layer { position: absolute; top: 0; left: 0; z-index: 5; touch-action: none; }
-.view-mode { pointer-events: none !important; }
 
 /* Answer Header */
 .answer-header { 
@@ -50,29 +52,21 @@ canvas { display: block; width: 100% !important; height: auto !important; }
 }
 .hidden-viewport { display: none !important; }
 
-.main-layout {
-    display: flex;
-    flex: 1;
-    overflow: hidden; 
-    position: relative;
-}
+.main-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
 .sidebar-zone {
-    width: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0px 0px;
+    width: auto; display: flex; flex-direction: column; 
+    justify-content: center; padding: 0 4px;
     z-index: 100; 
 }
+
 /* --- SIDEBAR TOOLBAR --- */
 .drawing-sidebar {
-    position: relative;
-    display: flex; flex-direction: row; gap: 12px; 
-    background: white; padding: 8px; border-radius: 16px; 
+    position: relative; display: flex; flex-direction: column; gap: 12px; 
+    background: white; padding: 12px; border-radius: 16px; 
     box-shadow: 0 5px 25px rgba(0,0,0,0.15); z-index: 1000;
 }
 .drawing-sidebar button {
-    width: 35px; height: 35px; border-radius: 12px; border: 1px solid #f0f0f0;
+    width: 48px; height: 48px; border-radius: 12px; border: 1px solid #f0f0f0;
     background: #fff; color: #555; font-size: 18px; cursor: pointer; transition: 0.2s;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -87,7 +81,7 @@ canvas { display: block; width: 100% !important; height: auto !important; }
     cursor: pointer; color: #666; font-weight: bold;
 }
 
-/* --- SETTINGS POPUP (Bubble Style) --- */
+/* --- SETTINGS POPUP --- */
 .settings-popup {
     position: absolute; left: 65px; top: 0;
     background: white; padding: 15px; border-radius: 12px;
@@ -111,50 +105,90 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
 /* Eraser Buttons */
 .mode-select { display: flex; gap: 5px; background: #eee; padding: 4px; border-radius: 8px; }
 .mode-select button { 
-    width: 100%; height: 30px; font-size: 12px; border: none; ; 
+    width: 100%; height: 30px; font-size: 12px; border: none; 
     border-radius: 6px; background: transparent; 
 }
 .mode-select button.active { background: white; color: black; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-/* --- FOOTER (Big Buttons) --- */
+/* --- FOOTER & CONTROLS --- */
 .controls { 
-    padding: clamp(10px, 2vh, 20px); background: white; border-top: 1px solid #eee; z-index: 20; 
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-    flex-shrink: 0; /* Prevents it from being crushed */
+    padding: 15px; background: white; border-top: 1px solid #eee; z-index: 20; 
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05); flex-shrink: 0; 
 }
-
-/* 1. Leak Answer Button (Full Width, Bold) */
 .btn-leak { 
-    width: 100%; padding: 6px; 
-       height: clamp(20px, 8vh, 80px);
-    font-size: clamp(12px, 2.0vh, 24px);   
-    font-weight: 700; 
+    width: 100%; padding: 15px; font-size: 18px; font-weight: 700; 
     background: linear-gradient(135deg, #FF9500, #FF3B30); 
     color: white; border: none; border-radius: 12px; 
-    /* Spacing between this button and the smaller ones below */
-    margin-bottom: clamp(10px, 1.5vh, 15px);
-    cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+    margin-bottom: 12px; cursor: pointer; 
+    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
     transition: transform 0.1s;
 }
 .btn-leak:active { transform: scale(0.98); }
 
-/* 2. Lower Buttons (Large & Prettier) */
-.mode-buttons { display: flex; gap: 15px; margin-bottom: 2px; }
-.btn-mode { 
-    flex: 1; padding: 12px;height: clamp(20px, 8vh, 80px);
-    font-size: clamp(12px, 1.5vh, 20px);   font-weight: 600;
-    background: #f2f2f7; color: #333; border: none; border-radius: 12px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: 0.2s;
+.footer-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.btn-back {
+    height: 44px; flex-shrink: 0; font-size: 14px;
+    background: #f2f2f7; border: none; padding: 0 20px; border-radius: 10px;
+    font-weight: 600; cursor: pointer; color: #555; display: flex; align-items: center; gap: 5px;
 }
-.btn-mode:active { background: #e5e5ea; transform: scale(0.98); }
+.mode-group { display: flex; gap: 8px; flex: 1; }
+.btn-mode-sm {
+    flex: 1; height: 44px; border: none; background: #f2f2f7; border-radius: 10px;
+    font-size: 13px; font-weight: 600; color: #444; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.btn-mode-sm:active { background: #e0e0e0; }
 
-/* --- GRID OVERLAY (Clean & Starred Table) --- */
+/* --- EXPORT MENU STYLES (UPDATED) --- */
+.dropdown-menu {
+    position: absolute; top: 70px; right: 20px;
+    background: white; border-radius: 12px; width: 260px; /* Slightly wider */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; overflow: hidden;
+    z-index: 2000; border: 1px solid #eee;
+}
+.dropdown-menu button {
+    background: white; border: none; padding: 12px 15px; text-align: left;
+    font-size: 14px; font-weight: 600; color: #333; cursor: pointer;
+}
+.dropdown-menu button:hover { background: #f9f9f9; color: #007AFF; }
+.menu-divider { height: 1px; background: #f0f0f0; margin: 5px 0; }
+
+/* Settings Area */
+.export-settings { padding: 10px 15px; background: #f9f9fc; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+.setting-label { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.setting-row span { font-size: 13px; font-weight: 600; color: #444; }
+.setting-row select { 
+    padding: 4px 8px; border-radius: 6px; border: 1px solid #ddd; 
+    font-size: 12px; background: white; outline: none; 
+    width: 130px; /* fixed width for neatness */
+}
+.btn-save-all { 
+    background: #007AFF !important; color: white !important; 
+    text-align: center !important; justify-content: center;
+}
+.btn-save-all:hover { background: #0063ce !important; }
+
+/* --- OVERLAY --- */
 .overlay { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
     background: rgba(255,255,255,0.98); z-index: 2000; padding: 20px; 
     box-sizing: border-box; display: flex; flex-direction: column;
 }
+/* Center the progress box specifically */
+#progressOverlay { 
+    background: rgba(0,0,0,0.3); /* Dim background */
+    align-items: center; justify-content: center;
+}
+.progress-box {
+    background: white; padding: 30px; border-radius: 12px; 
+    width: 80%; max-width: 400px; text-align: center; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.progress-track { width: 100%; background: #eee; height: 10px; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+.progress-fill { width: 0%; height: 100%; background: #007AFF; transition: width 0.2s; }
+
 .grid-wrapper { flex: 1; overflow-y: auto; margin-bottom: 20px; }
 .grid-table { width: 100%; border-collapse: separate; border-spacing: 5px; }
 .grid-table td { 
@@ -162,32 +196,31 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; bo
     background: white; border-radius: 8px; font-size: 16px; font-weight: 500;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer;
 }
-/* Starred Items Styling */
-.grid-table td.starred { 
-    background: #FFF9C4; border: 2px solid #FFD60A; color: #b45309; font-weight: bold;
-}
+.grid-table td.starred { background: #FFF9C4; border: 2px solid #FFD60A; color: #b45309; font-weight: bold; }
 .btn-close-overlay { 
     width: 100%; padding: 15px; background: #333; color: white; 
     border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
 }
-.hidden { display: none; }
+.hidden { display: none !important; } /* Force hidden */
 
-.btn-back {
-    background: #f2f2f7;
-    border: none;
-    padding: 8px 15px;
-    height: clamp(12px, 8vh, 80px);
-    font-size: clamp(12px, 1.5vh, 20px); 
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 600px) {
+    .drawing-sidebar { padding: 8px; gap: 8px; }
+    .drawing-sidebar button { width: 36px; height: 36px; font-size: 14px; }
+    .scroll-area { padding: 2px; }
+    .sidebar-zone { padding: 0 2px; }
+    .controls { padding: 10px; }
+    .btn-leak { padding: 12px; font-size: 16px; }
 }
 
-.btn-back:hover {
-    background: #e5e5ea;
+@media (max-height: 500px) and (orientation: landscape) {
+    .nav-bar { padding: 4px 15px; min-height: 40px; }
+    .btn-nav { width: 32px; height: 32px; font-size: 14px; }
+    .btn-star { font-size: 20px; }
+    .progress-info { font-size: 12px; padding: 4px 10px; }
+    .controls { padding: 5px 10px; }
+    .btn-leak { height: 32px; padding: 0; font-size: 14px; margin-bottom: 5px; }
+    .btn-back, .btn-mode-sm { height: 32px; font-size: 12px; }
+    .drawing-sidebar { padding: 4px; gap: 4px; }
+    .drawing-sidebar button { width: 30px; height: 30px; font-size: 12px; }
 }
-
