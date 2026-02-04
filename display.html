@@ -61,13 +61,30 @@
         </header>
 
         <div id="exportMenu" class="dropdown-menu hidden">
+            <button class="btn-appeal" onclick="openAppeal()">
+                <i class="fas fa-bullhorn"></i> Appeal
+            </button>
+            
+            <div class="menu-divider"></div>
+
+            <div class="export-settings" style="border-bottom:none; padding-bottom:5px;">
+                <div class="setting-row">
+                    <span>Source:</span>
+                    <select id="exportSource">
+                        <option value="q">Question</option>
+                        <option value="a">Answer</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+            </div>
+
             <button onclick="saveCurrentPage('png')">Save this page as PNG</button>
             <button onclick="saveCurrentPage('pdf')">Save this page as PDF</button>
             
             <div class="menu-divider"></div>
             
             <div class="export-settings">
-                <div class="setting-label">Settings for "Save All":</div>
+                <div class="setting-label">SETTINGS FOR CUSTOMIZED PDF:</div>
                 
                 <div class="setting-row">
                     <span>Format:</span>
@@ -84,9 +101,17 @@
                         <option value="starred">Only Starred & Annotated</option>
                     </select>
                 </div>
+
+                <div class="setting-row range-row">
+                    <span>Range:</span>
+                    <div class="range-inputs">
+                        from <input type="number" id="rangeFrom" value="1" min="1">
+                        to <input type="number" id="rangeTo" value="1" min="1">
+                    </div>
+                </div>
             </div>
 
-            <button onclick="saveAllPages()" id="btnSaveAll" class="btn-save-all">Save All as PDF</button>
+            <button onclick="saveAllPages()" id="btnSaveAll" class="btn-save-all">Save Customized PDF</button>
         </div>
 
         <div class="main-layout">
@@ -143,6 +168,25 @@
                 <div id="progressText" style="color: #666; font-weight: bold;">0%</div>
             </div>
         </div>
+
+        <div id="appealModal" class="overlay hidden" style="z-index: 3500;">
+            <div class="appeal-box">
+                <h3>Submit an Appeal</h3>
+                <div id="appealInfo" class="appeal-info-text">File: ... | Page: ...</div>
+                
+                <label>Quiz Number:</label>
+                <input type="text" id="appealQuizNum" placeholder="e.g. Q12">
+                
+                <label>Comments:</label>
+                <textarea id="appealComment" rows="4" placeholder="Describe the issue..."></textarea>
+                
+                <div class="appeal-buttons">
+                    <button onclick="toggleAppeal()" class="btn-cancel">Cancel</button>
+                    <button onclick="submitAppeal()" class="btn-submit-appeal">Submit</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="script.js"></script>
