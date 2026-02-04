@@ -14,11 +14,49 @@
         
         <header class="nav-bar">
             <button class="btn-star" id="starBtn" onclick="toggleStar()">★</button>
+
             <div id="progress" class="progress-info" onclick="toggleGrid()">Loading...</div>
-            <div class="nav-arrows">
-                <button class="btn-nav" onclick="prevQuiz()">❮</button>
-                <button class="btn-nav" onclick="nextQuiz()">❯</button>
-                <button class="btn-nav btn-menu" onclick="toggleExportMenu()">⋮</button>
+
+            <div class="toolbar-horizontal">
+                <div class="tool-wrapper">
+                    <button onclick="setTool('pen')" id="penBtn" title="Pen"><i class="fas fa-pen"></i></button>
+                    <div class="tool-settings-trigger" onclick="toggleSettings('penSettings')">⋮</div>
+                    
+                    <div id="penSettings" class="settings-popup hidden">
+                        <label>Pen Thickness</label>
+                        <input type="range" min="1" max="20" value="3" oninput="updateSettings('penSize', this.value)">
+                        <label>RGB Color</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="nativeColorPicker" value="#000000" onchange="setColor(this.value)">
+                            <span class="color-label">Tap to choose</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-wrapper">
+                    <button onclick="setTool('eraser')" id="eraserBtn" title="Eraser"><i class="fas fa-eraser"></i></button>
+                    <div class="tool-settings-trigger" onclick="toggleSettings('eraserSettings')">⋮</div>
+                    
+                    <div id="eraserSettings" class="settings-popup hidden">
+                        <label>Eraser Type</label>
+                        <div class="mode-select">
+                            <button id="modePrecision" class="active" onclick="setEraserMode('precision')">Pixel</button>
+                            <button id="modeStroke" onclick="setEraserMode('stroke')">Object</button>
+                        </div>
+                        <label>Size</label>
+                        <input type="range" min="5" max="50" value="20" oninput="updateSettings('eraserSize', this.value)">
+                    </div>
+                </div>
+
+                <button onclick="clearAllStrokes()" class="btn-clear" title="Clear Page"><i class="fas fa-trash-can"></i></button>
+            </div>
+
+            <div class="nav-capsule">
+                <button class="btn-cap" onclick="prevQuiz()">❮</button>
+                <div class="cap-divider"></div>
+                <button class="btn-cap" onclick="nextQuiz()">❯</button>
+                <div class="cap-divider"></div>
+                <button class="btn-cap btn-menu" onclick="toggleExportMenu()">⋮</button>
             </div>
         </header>
 
@@ -52,43 +90,6 @@
         </div>
 
         <div class="main-layout">
-            <div class="sidebar-zone">
-                <aside class="drawing-sidebar">
-                    <div class="tool-group">
-                        <button onclick="setTool('pen')" id="penBtn" title="Pen"><i class="fas fa-pen"></i></button>
-                        <div class="tool-settings-trigger" onclick="toggleSettings('penSettings')">⋮</div>
-                
-                        <div id="penSettings" class="settings-popup hidden">
-                         <label>Pen Thickness</label>
-                         <input type="range" min="1" max="20" value="3" oninput="updateSettings('penSize', this.value)">
-                    
-                          <label>RGB Color</label>
-                           <div class="color-picker-wrapper">
-                             <input type="color" id="nativeColorPicker" value="#000000" onchange="setColor(this.value)">
-                                <span class="color-label">Tap to choose</span>
-                         </div>
-                     </div>
-                 </div>
-
-                 <div class="tool-group">
-                       <button onclick="setTool('eraser')" id="eraserBtn" title="Eraser"><i class="fas fa-eraser"></i></button>
-                      <div class="tool-settings-trigger" onclick="toggleSettings('eraserSettings')">⋮</div>
-                
-                         <div id="eraserSettings" class="settings-popup hidden">
-                           <label>Eraser Type</label>
-                          <div class="mode-select">
-                               <button id="modePrecision" class="active" onclick="setEraserMode('precision')">Pixel</button>
-                               <button id="modeStroke" onclick="setEraserMode('stroke')">Object</button>
-                         </div>
-                         <label>Size</label>
-                          <input type="range" min="5" max="50" value="20" oninput="updateSettings('eraserSize', this.value)">
-                      </div>
-                    </div>
-
-                 <button onclick="clearAllStrokes()" class="btn-clear" title="Clear Page"><i class="fas fa-trash-can"></i></button>
-                </aside>
-            </div>
-
             <div class="scroll-area" id="mainScroll">
                 <div class="viewport">
                     <div class="canvas-wrapper">
@@ -110,7 +111,7 @@
         <footer class="controls">
             <button class="btn-leak" id="leakBtn" onclick="toggleAnswer()">Leak Answer</button>
             <div class="footer-row">
-                <button class="btn-back" onclick="window.location.href='Nav.html'">
+                <button class="btn-back" onclick="history.back()">
                     <i class="fas fa-chevron-left"></i> Back
                 </button>
                 <div class="mode-group">

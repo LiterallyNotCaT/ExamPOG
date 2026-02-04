@@ -71,8 +71,12 @@ async function drawPage(page, pdfCanvasId, drawCanvasId) {
     const context = canvas.getContext('2d');
     const wrapper = canvas.parentElement;
 
-    const containerWidth = wrapper.clientWidth || 600;
+    // FIX FOR MOBILE BUG: Do not force fixed height. Let CSS handle it.
+    // const containerWidth = wrapper.clientWidth || 600;
+    
+    // Get unscaled viewport to calculate ratio if needed, but we rely on container width
     const unscaled = page.getViewport({ scale: 1, rotation: page.rotate });
+    const containerWidth = wrapper.clientWidth || 600;
     const scale = containerWidth / unscaled.width;
     const viewport = page.getViewport({ scale: scale * 2, rotation: page.rotate });
 
@@ -81,7 +85,8 @@ async function drawPage(page, pdfCanvasId, drawCanvasId) {
     dCanvas.width = viewport.width;
     dCanvas.height = viewport.height;
     
-    wrapper.style.height = (viewport.height / 2) + "px";
+    // FIX: Removed this line to prevent excess whitespace on mobile
+    // wrapper.style.height = (viewport.height / 2) + "px";
 
     await page.render({ canvasContext: context, viewport: viewport }).promise;
 }
@@ -244,9 +249,11 @@ function toggleExportMenu() {
 document.addEventListener('click', function(event) {
     const menu = document.getElementById('exportMenu');
     const btn = document.querySelector('.btn-menu');
-    // Only close if we are not clicking inside the settings area (selects need clicks)
-    if (!menu.contains(event.target) && !btn.contains(event.target)) {
+    // Also ignore clicks inside the toolbar settings popups
+    const isSetting = event.target.closest('.settings-popup') || event.target.closest('.tool-settings-trigger');
+    if (!menu.contains(event.target) && !btn.contains(event.target) && !isSetting) {
         menu.classList.add('hidden');
+        document.querySelectorAll('.settings-popup').forEach(x => x.classList.add('hidden'));
     }
 });
 
@@ -256,10 +263,10 @@ function updateProgressBar(percent, text) {
     const txt = document.getElementById('progressText');
     
     if (percent === null) {
-        overlay.classList.add('hidden'); // Ensure CSS hides it
+        overlay.classList.add('hidden'); 
     } else {
         overlay.classList.remove('hidden');
-        overlay.style.display = 'flex'; // Enable Flexbox
+        overlay.style.display = 'flex'; 
         bar.style.width = percent + '%';
         txt.innerText = text || Math.round(percent) + '%';
     }
@@ -269,7 +276,9 @@ function updateProgressBar(percent, text) {
 async function renderPageToImage(pageIndex, type = 'q') {
     const pdfDoc = type === 'q' ? questionDoc : answerDoc;
     const page = await pdfDoc.getPage(pageIndex + 1);
-    const viewport = page.getViewport({ scale: 1.5 }); 
+    
+    // Use high scale for image quality
+    const viewport = page.getViewport({ scale: 2.0 }); 
     
     const canvas = document.createElement('canvas');
     canvas.width = viewport.width;
@@ -306,7 +315,7 @@ async function renderPageToImage(pageIndex, type = 'q') {
     }
 
     return { 
-        dataUrl: canvas.toDataURL('image/jpeg', 0.6), 
+        dataUrl: canvas.toDataURL('image/jpeg', 0.8), 
         width: viewport.width, 
         height: viewport.height 
     };
@@ -318,19 +327,26 @@ async function saveCurrentPage(format) {
     const actualIdx = displayOrder[currentIndex];
     
     setTimeout(async () => {
-        const imgData = await renderPageToImage(actualIdx, 'q');
-        if (format === 'png') {
-            const link = document.createElement('a');
-            link.download = `Page_${actualIdx + 1}.jpg`;
-            link.href = imgData.dataUrl;
-            link.click();
-        } else {
-            const { jsPDF } = window.jspdf;
-            const orientation = imgData.width > imgData.height ? 'l' : 'p';
-            const pdf = new jsPDF(orientation, 'px', [imgData.width, imgData.height]);
-            pdf.addImage(imgData.dataUrl, 'JPEG', 0, 0, imgData.width, imgData.height);
-            pdf.save(`Page_${actualIdx + 1}.pdf`);
-        }
+        try {
+            const imgData = await renderPageToImage(actualIdx, 'q');
+            if (format === 'png') {
+                const link = document.createElement('a');
+                link.download = `Page_${actualIdx + 1}.jpg`;
+                link.href = imgData.dataUrl;
+                link.click();
+            } else {
+                const { jsPDF } = window.jspdf;
+                // FIX: Get ORIGINAL size
+                const page = await questionDoc.getPage(actualIdx + 1);
+                const orig = page.getViewport({scale: 1});
+                const orientation = orig.width > orig.height ? 'l' : 'p';
+                
+                const pdf = new jsPDF(orientation, 'px', [orig.width, orig.height]);
+                // Add image filling the EXACT pdf size
+                pdf.addImage(imgData.dataUrl, 'JPEG', 0, 0, orig.width, orig.height);
+                pdf.save(`Page_${actualIdx + 1}.pdf`);
+            }
+        } catch(e) { console.error(e); }
         updateProgressBar(null);
     }, 100);
 }
@@ -339,9 +355,8 @@ async function saveCurrentPage(format) {
 async function saveAllPages() {
     toggleExportMenu();
     
-    // Get Settings
-    const format = document.getElementById('exportFormat').value; // "1" or "4"
-    const filter = document.getElementById('exportFilter').value; // "all" or "starred"
+    const format = document.getElementById('exportFormat').value; 
+    const filter = document.getElementById('exportFilter').value; 
     
     updateProgressBar(0, "Identifying pages...");
 
@@ -371,11 +386,8 @@ async function saveAllPages() {
             }
 
             // 2. EXPORT LOOP
-            // We use the dimensions of the FIRST page to determine PDF layout
-            // For 4-in-1, we assume all pages have roughly similar ratio for best result
-            
             let pageWidth = 0, pageHeight = 0;
-            let counter = 0; // Counts images drawn on current PDF page
+            let counter = 0; 
 
             for (let k = 0; k < pagesToExport.length; k++) {
                 const idx = pagesToExport[k];
@@ -384,48 +396,49 @@ async function saveAllPages() {
 
                 const imgData = await renderPageToImage(idx, 'q');
                 
-                // Initialize PDF on first item
+                // FIX: Retrieve ORIGINAL PDF PAGE SIZE
+                const page = await questionDoc.getPage(idx + 1);
+                const orig = page.getViewport({ scale: 1 });
+
+                // Initialize PDF on first item using ORIGINAL size
                 if (pdfDoc === null) {
-                    pageWidth = imgData.width;
-                    pageHeight = imgData.height;
+                    pageWidth = orig.width;
+                    pageHeight = orig.height;
                     const orientation = pageWidth > pageHeight ? 'l' : 'p';
                     
                     if (format === '4') {
-                        // For 4-in-1, PDF page size stays same, but we draw images smaller.
-                        // OR we make PDF page 2x bigger. Let's make PDF page 2x bigger to keep quality.
-                        pdfDoc = new jsPDF(orientation, 'px', [pageWidth * 2, pageHeight * 2]);
+                        // For 4 in 1: We still use the original paper size (A4, etc)
+                        // But we will fit 4 images into it.
+                        pdfDoc = new jsPDF(orientation, 'px', [pageWidth, pageHeight]);
                     } else {
                         pdfDoc = new jsPDF(orientation, 'px', [pageWidth, pageHeight]);
                     }
                 }
 
                 if (format === '1') {
-                    // Standard 1 per page
                     if (k > 0) {
                         pdfDoc.addPage([pageWidth, pageHeight], pageWidth > pageHeight ? 'l' : 'p');
                     }
                     pdfDoc.addImage(imgData.dataUrl, 'JPEG', 0, 0, pageWidth, pageHeight);
                 } 
                 else if (format === '4') {
-                    // 4 per page Logic
-                    // 0 | 1
-                    // -----
-                    // 2 | 3
-                    
+                    // 4 per page Logic: Fit 4 images onto the Standard Paper Size
                     if (counter === 4) {
-                        pdfDoc.addPage([pageWidth * 2, pageHeight * 2], pageWidth > pageHeight ? 'l' : 'p');
+                        pdfDoc.addPage([pageWidth, pageHeight], pageWidth > pageHeight ? 'l' : 'p');
                         counter = 0;
                     }
 
-                    const x = (counter % 2) * pageWidth;
-                    const y = Math.floor(counter / 2) * pageHeight;
+                    const subW = pageWidth / 2;
+                    const subH = pageHeight / 2;
+                    const x = (counter % 2) * subW;
+                    const y = Math.floor(counter / 2) * subH;
 
-                    // Draw image at full resolution into the quadrant
-                    pdfDoc.addImage(imgData.dataUrl, 'JPEG', x, y, pageWidth, pageHeight);
+                    // Draw image scaled down into the quadrant
+                    pdfDoc.addImage(imgData.dataUrl, 'JPEG', x, y, subW, subH);
                     
-                    // Draw a light border around quadrant
-                    pdfDoc.setDrawColor(200, 200, 200);
-                    pdfDoc.rect(x, y, pageWidth, pageHeight);
+                    // Optional border
+                    pdfDoc.setDrawColor(240, 240, 240);
+                    pdfDoc.rect(x, y, subW, subH);
                     
                     counter++;
                 }
